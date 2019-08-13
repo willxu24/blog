@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Manjaro安装与配置 - Will Blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="Will Xu" /><meta name="description" content="manjaro是什么？移步manjaro中文论坛
+manjaro的特点：
+ 基于arch的发行版，滚动更新使软件保持最新 新手友好型，没时间折腾原生arch的选择 独特的AUR软件仓库有着世界上最多的软件资源 官方版本三个GUI界面可选，社区版本提供更多  总结：用起来爽！
+本文为基于R720与manjaro-gnome的安装配置不完全教程，主要目的为个人配置备忘录
+" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.57.0-DEV with even 4.0.0" />
+
+
+<link rel="canonical" href="https://willxu24.github.io/post/20190711-manjaroinstall/" />
+  <link href="/post/20190711-manjaroinstall/" rel="alternate" type="application/rss+xml" title="Will Blog" />
+  <link href="/post/20190711-manjaroinstall/" rel="feed" type="application/rss+xml" title="Will Blog" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link href="/dist/even.bc2f3a2c.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="Manjaro安装与配置" />
+<meta property="og:description" content="manjaro是什么？移步manjaro中文论坛
+
+manjaro的特点：
+
+
+基于arch的发行版，滚动更新使软件保持最新
+新手友好型，没时间折腾原生arch的选择
+独特的AUR软件仓库有着世界上最多的软件资源
+官方版本三个GUI界面可选，社区版本提供更多
+
+
+总结：用起来爽！
+
+本文为基于R720与manjaro-gnome的安装配置不完全教程，主要目的为个人配置备忘录" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://willxu24.github.io/post/20190711-manjaroinstall/" />
+<meta property="article:published_time" content="2019-07-11T23:05:04+08:00" />
+<meta property="article:modified_time" content="2019-08-13T23:05:04+08:00" />
+<meta itemprop="name" content="Manjaro安装与配置">
+<meta itemprop="description" content="manjaro是什么？移步manjaro中文论坛
+
+manjaro的特点：
+
+
+基于arch的发行版，滚动更新使软件保持最新
+新手友好型，没时间折腾原生arch的选择
+独特的AUR软件仓库有着世界上最多的软件资源
+官方版本三个GUI界面可选，社区版本提供更多
+
+
+总结：用起来爽！
+
+本文为基于R720与manjaro-gnome的安装配置不完全教程，主要目的为个人配置备忘录">
+
+
+<meta itemprop="datePublished" content="2019-07-11T23:05:04&#43;08:00" />
+<meta itemprop="dateModified" content="2019-08-13T23:05:04&#43;08:00" />
+<meta itemprop="wordCount" content="806">
+
+
+
+<meta itemprop="keywords" content="Linux,manjaro,拯救者r720," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Manjaro安装与配置"/>
+<meta name="twitter:description" content="manjaro是什么？移步manjaro中文论坛
+
+manjaro的特点：
+
+
+基于arch的发行版，滚动更新使软件保持最新
+新手友好型，没时间折腾原生arch的选择
+独特的AUR软件仓库有着世界上最多的软件资源
+官方版本三个GUI界面可选，社区版本提供更多
+
+
+总结：用起来爽！
+
+本文为基于R720与manjaro-gnome的安装配置不完全教程，主要目的为个人配置备忘录"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Will Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">Will Blog</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">Manjaro安装与配置</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2019-07-11 </span>
+        <div class="post-category">
+            <a href="/categories/%E5%AE%9E%E7%94%A8%E6%95%99%E7%A8%8B/"> 实用教程 </a>
+            </div>
+          <span class="more-meta"> 806 words </span>
+          <span class="more-meta"> 2 mins read </span>
+        <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> times read </span>
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#一-制作启动盘">一、制作启动盘</a></li>
+<li><a href="#二-安装">二、安装</a></li>
+<li><a href="#三-配置">三、配置</a>
+<ul>
+<li><a href="#1-编辑wifi配置">1.编辑WiFi配置</a></li>
+<li><a href="#2-更改软件源">2.更改软件源</a></li>
+<li><a href="#3-添加arch中国源">3.添加arch中国源</a></li>
+<li><a href="#4-更新系统">4.更新系统</a></li>
+<li><a href="#5-搜狗输入法">5.搜狗输入法</a></li>
+<li><a href="#6-终端快捷键">6.终端快捷键</a></li>
+<li><a href="#7-软件备忘录">7.软件备忘录</a></li>
+</ul></li>
+<li><a href="#参考文档">参考文档：</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>manjaro是什么？移步<a href="https://www.manjaro.cn/category/about-manjaro-linux">manjaro中文论坛</a></p>
+
+<p>manjaro的特点：</p>
+
+<ul>
+<li>基于arch的发行版，滚动更新使软件保持最新</li>
+<li>新手友好型，没时间折腾原生arch的选择</li>
+<li>独特的AUR软件仓库有着世界上最多的软件资源</li>
+<li>官方版本三个GUI界面可选，社区版本提供更多</li>
+</ul>
+
+<p>总结：用起来爽！</p>
+
+<p>本文为基于R720与manjaro-gnome的安装配置<strong>不完全教程</strong>，主要目的为个人配置备忘录</p>
+
+<h3 id="一-制作启动盘">一、制作启动盘</h3>
+
+<p>manjaro官网：<a href="https://www.manjaro.org/download/">https://www.manjaro.org/download/</a></p>
+
+<p>U盘制作软件：<a href="http://rufus.ie/">Rufus</a></p>
+
+<p>制作配置：<strong>分区类型为GPT，目标系统类型UEFI，并且以DD模式写入</strong></p>
+
+<h3 id="二-安装">二、安装</h3>
+
+<p>语言：中文</p>
+
+<p>驱动：nofree</p>
+
+<p><img src="https://i.loli.net/2019/07/27/5d3bd5eadf7f255553.jpg" alt="IMG_20190725_180013.jpg" /></p>
+
+<h3 id="三-配置">三、配置</h3>
+
+<h4 id="1-编辑wifi配置">1.编辑WiFi配置</h4>
+
+<p>编辑<code>/etc/modprobe.d/r8169_blacklist.conf</code>修复r720硬件问题</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">$ sudo gedit /etc/modprobe.d/r8169_blacklist.conf</code></pre></td></tr></table>
+</div>
+</div>
+<p>文本添加一行<code>blacklist ideapad_laptop</code>，reboot重启后生效</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">$ reboot</code></pre></td></tr></table>
+</div>
+</div>
+<h4 id="2-更改软件源">2.更改软件源</h4>
+
+<p>自动更改软件源为国内</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">$ sudo pacman-mirrors -c China  </code></pre></td></tr></table>
+</div>
+</div>
+<h4 id="3-添加arch中国源">3.添加arch中国源</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">$ sudo gedit /etc/pacman.conf</code></pre></td></tr></table>
+</div>
+</div>
+<p>文件最后添加以下内容</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-conf" data-lang="conf"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-conf" data-lang="conf">[archlinuxcn]
+SigLevel = Optional TrustedOnly
+Server = https://mirrors.ustc.edu.cn/archlinuxcn/$arch</code></pre></td></tr></table>
+</div>
+</div>
+<h4 id="4-更新系统">4.更新系统</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">$ sudo pacman -Syu
+$ sudo pacman -S archlinuxcn-keyring <span class="c1">#载入密匙后再刷新系统</span>
+$ sudo pacman -Syu</code></pre></td></tr></table>
+</div>
+</div>
+<h4 id="5-搜狗输入法">5.搜狗输入法</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">$ sudo pacman -S fcitx-im    <span class="c1">#默认全部安装</span>
+$ sudo pacman -S fcitx-configtool
+$ sudo pacman -S fcitx-sogoupinyin</code></pre></td></tr></table>
+</div>
+</div>
+<p>创建并编辑<code>.xprofile</code>文件</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">$ gedit ~/.xprofile</code></pre></td></tr></table>
+</div>
+</div>
+<p>写入以下内容后reboot重启生效</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">export GTK_IM_MODULE=fcitx
+export QT_IM_MODULE=fcitx
+export XMODIFIERS=&#34;@im=fcitx&#34;</pre></td></tr></table>
+</div>
+</div>
+<p>注意：如果出现错误提示<code>sogou输入法异常！请删除 ~/.config/SogouPY并重启</code>，安装<code>fcitx-qt4</code>可以解决</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">$ sudo pacman -S fcitx-qt4</code></pre></td></tr></table>
+</div>
+</div>
+<h4 id="6-终端快捷键">6.终端快捷键</h4>
+
+<p>打开<code>设置</code>-<code>设备</code>-<code>keyboard</code>，拉到最下添加快捷键如下图</p>
+
+<p><img src="https://i.loli.net/2019/07/27/5d3bd82d31d6371710.png" alt="2019-07-27 12-28-57屏幕截图.png" /></p>
+
+<h4 id="7-软件备忘录">7.软件备忘录</h4>
+
+<ul>
+<li>日常：
+
+<ul>
+<li>yay</li>
+<li>google-chrome</li>
+<li>deepin.com.qq.im</li>
+<li>electron-netease-cloud-music</li>
+</ul></li>
+<li>基本技术：
+
+<ul>
+<li>vim</li>
+<li>tree</li>
+<li>typora</li>
+<li>visual-studio-code-bin</li>
+</ul></li>
+<li>Golang：
+
+<ul>
+<li>go</li>
+<li>hugo</li>
+<li>goland</li>
+<li>postman</li>
+</ul></li>
+</ul>
+
+<h3 id="参考文档">参考文档：</h3>
+
+<p><a href="https://blog.csdn.net/qq_19107011/article/details/84098434">联想拯救者R720安装Manjaro Linux(日常开发)</a></p>
+
+<p><a href="https://www.jianshu.com/p/8787739eabd8">Manjaro下使用图床工具PicGo</a></p>
+
+<p><a href="https://www.cnblogs.com/demonxian3/p/9259912.html">完美脱离Windows!! Linux发行版第一系统 Manjaro 开箱教程 :)</a></p>
+
+<p><a href="https://www.jianshu.com/p/bcb6df649514">manjaro安装完后的配置</a></p>
+    </div>
+
+    
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/linux/">Linux</a>
+          <a href="/tags/manjaro/">manjaro</a>
+          <a href="/tags/%E6%8B%AF%E6%95%91%E8%80%85r720/">拯救者r720</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/20190712-archmongodb/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">Arch下安装MongoDB</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/post/20190710-mongogodriver/">
+            <span class="next-text nav-default">MongoDB Go Driver基础用法小结</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+  
+  
+  <div id="vcomments"></div>
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+  <script type="text/javascript">
+    new Valine({
+        el: '#vcomments' ,
+        appId: 'x6Epf7YC8YLIJRYK1pvsE1U6-gzGzoHsz',
+        appKey: 'lcJGkSFUN3dy9qMJRL2E56jP',
+        notify:  false , 
+        verify:  false , 
+        avatar:'wavatar', 
+        placeholder: '说点什么吧...',
+        visitor:  false 
+    });
+  </script>
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+</div>
+
+<div class="copyright">
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> site pv: <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> </span>
+      <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> site uv: <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2018 - 
+    2019
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Will Xu</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.min.js" integrity="sha256-jwCP0NAdCBloaIWTWHmW4i3snUNMHUNO+jr9rYd2iOI=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.locales.min.js" integrity="sha256-ZwofwC1Lf/faQCzN7nZtfijVV6hSwxjQMwXL4gn9qU8=" crossorigin="anonymous"></script>
+  <script><!-- NOTE: timeago.js uses the language code format like "zh_CN" (underscore and case sensitive) -->
+    var languageCode = "en".replace(/-/g, '_').replace(/_(.*)/, function ($0, $1) {return $0.replace($1, $1.toUpperCase());});
+    timeago().render(document.querySelectorAll('.timeago'), languageCode);
+    timeago.cancel();  
+  </script>
+<script type="text/javascript" src="/dist/even.f79f403f.min.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

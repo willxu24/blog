@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>golang学习项目一の回顾总结 - Will Blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="will xu" /><meta name="description" content="基于Gin与Mongodb实现的成员管理系统
+ 管理员和普通用户
+ 用户注册和登录  用户信息包括用户ID、密码（数据库中加密）、昵称、手机号、邮箱地址
+ 管理员
+ 删除普通用户 获取一个成员、所有成员信息  普通用户
+ 更改个人信息  " />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.57.0-DEV with even 4.0.0" />
+
+
+<link rel="canonical" href="https://willxu24.github.io/post/20190728-glangpractice/" />
+  <link href="/post/20190728-glangpractice/" rel="alternate" type="application/rss+xml" title="Will Blog" />
+  <link href="/post/20190728-glangpractice/" rel="feed" type="application/rss+xml" title="Will Blog" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link href="/dist/even.bc2f3a2c.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="golang学习项目一の回顾总结" />
+<meta property="og:description" content="基于Gin与Mongodb实现的成员管理系统
+
+
+管理员和普通用户
+
+
+用户注册和登录
+
+
+用户信息包括用户ID、密码（数据库中加密）、昵称、手机号、邮箱地址
+
+管理员
+
+
+删除普通用户
+获取一个成员、所有成员信息
+
+
+普通用户
+
+
+更改个人信息
+
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://willxu24.github.io/post/20190728-glangpractice/" />
+<meta property="article:published_time" content="2019-07-28T20:18:52+08:00" />
+<meta property="article:modified_time" content="2019-07-28T20:18:52+08:00" />
+<meta itemprop="name" content="golang学习项目一の回顾总结">
+<meta itemprop="description" content="基于Gin与Mongodb实现的成员管理系统
+
+
+管理员和普通用户
+
+
+用户注册和登录
+
+
+用户信息包括用户ID、密码（数据库中加密）、昵称、手机号、邮箱地址
+
+管理员
+
+
+删除普通用户
+获取一个成员、所有成员信息
+
+
+普通用户
+
+
+更改个人信息
+
+">
+
+
+<meta itemprop="datePublished" content="2019-07-28T20:18:52&#43;08:00" />
+<meta itemprop="dateModified" content="2019-07-28T20:18:52&#43;08:00" />
+<meta itemprop="wordCount" content="3085">
+
+
+
+<meta itemprop="keywords" content="golang,gin," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="golang学习项目一の回顾总结"/>
+<meta name="twitter:description" content="基于Gin与Mongodb实现的成员管理系统
+
+
+管理员和普通用户
+
+
+用户注册和登录
+
+
+用户信息包括用户ID、密码（数据库中加密）、昵称、手机号、邮箱地址
+
+管理员
+
+
+删除普通用户
+获取一个成员、所有成员信息
+
+
+普通用户
+
+
+更改个人信息
+
+"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Will Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">Will Blog</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">golang学习项目一の回顾总结</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2019-07-28 </span>
+        <div class="post-category">
+            <a href="/categories/%E5%90%8E%E7%AB%AF%E5%BC%80%E5%8F%91/"> 后端开发 </a>
+            <a href="/categories/%E5%AD%A6%E4%B9%A0%E9%A1%B9%E7%9B%AE/"> 学习项目 </a>
+            </div>
+          <span class="more-meta"> 3085 words </span>
+          <span class="more-meta"> 7 mins read </span>
+        <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> times read </span>
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#零-写在前面">零、写在前面</a></li>
+<li><a href="#一-需求分析">一、需求分析</a></li>
+<li><a href="#二-代码分析">二、代码分析</a>
+<ul>
+<li><a href="#1-文件结构">1.文件结构</a></li>
+<li><a href="#2-请求过程">2.请求过程</a></li>
+</ul></li>
+<li><a href="#三-项目总结">三、项目总结</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>基于<strong>Gin</strong>与<strong>Mongodb</strong>实现的成员管理系统</p>
+
+<ul>
+<li><p>管理员和普通用户</p>
+
+<ul>
+<li>用户注册和登录</li>
+</ul>
+
+<p>用户信息包括用户ID、密码（数据库中加密）、昵称、手机号、邮箱地址</p></li>
+
+<li><p>管理员</p>
+
+<ul>
+<li>删除普通用户</li>
+<li>获取一个成员、所有成员信息</li>
+</ul></li>
+
+<li><p>普通用户</p>
+
+<ul>
+<li>更改个人信息</li>
+</ul></li>
+</ul>
+
+<h3 id="零-写在前面">零、写在前面</h3>
+
+<p>这算是接触golang的第一个练手项目，对于我来说，学习golang的历程差不多是这样子</p>
+
+<ul>
+<li>先学<strong>基本技能</strong>：会用<strong>各类工具</strong>，学会<strong>环境搭建</strong>（这个我学前已经具备），别问，问就是谷歌，如果谷歌对你来说还是个404网站，那么你可能需要更多的学习（折腾）时间</li>
+<li>再看<strong>基本语法</strong>：虽说golang与c有许多类似的地方，但是仍然有许多独特之处，基本语法的学习是非常非常枯燥的，但是也是实打实的基础知识，不能缺，所以耐着性子也得学，至少要通读官方的<a href="https://tour.go-zh.org/list">go语言之旅</a>吧！</li>
+<li>再学习一门<strong>数据库</strong>与<strong>http协议</strong>：这两个与golang三块在前期打基础的时候都是相对独立的知识点，可以分开学，先不用考虑他们之间的联系（当然思考这方面问题是好的），然后你可能会觉得知识如此分散，不知如何整合，不知如何下手写代码。在你觉得几方面的基础都已经有了基本的了解之后进入下一步，我再说说什么是基本的了解
+
+<ul>
+<li>通读golang的基本语法，有实践教学用例</li>
+<li>了解http基本原理，明白如何发送与接受请求，知晓状态码的类别。</li>
+<li>数据库只要学会数据库的初始化以及数据的增删改读操作即可</li>
+</ul></li>
+<li>学着<strong>搭建基本的web环境</strong>：找一些简单的web实例来编写，比如编写一个简单的完整的api，不需要很难，很简单的一个功能，比如以GET方法发出一个请求在返回页面打印一个字符串。这一步重在了解一个完整的web环境由哪些东西构成。</li>
+<li>学习一门基于golang的<strong>web框架</strong>：例如gin、beego、echo等等框架，选择一门，看官方文档的实例，把基本的一些操作学习到，比如完整的一个基本流程、http方法的实现、请求响应信息的传输、文件的传输等等，说起来比较抽象，具体来说，就是把示例代码一个个拷到你的本机，然后一个一个运行，知道每个示例的功能以及他想要传达给你的。</li>
+<li>学习<strong>数据库对接</strong>：想必这时候你已经比较熟悉完整的web环境了，这时候再看看你学习的数据库如何与框架对接上，一般来说都会有现成的库文件可供学习，还会在文档中给出许多示例，这时候你就需要将你在之前学习到的数据库命令在现成库中的形式学会，怎样在这个框架下初始化数据库以及对数据的一系列基本操作。</li>
+<li>学习<strong>MVC架构</strong>：这时候你已经具有一定的代码编写能力，但是你的代码可能风格很差，但是你自己却不知道，可以搜索一些MVC架构的小项目，借鉴一下他人的代码，从而对
+MVC架构有自己的了解。</li>
+<li>学习更多的库，更多的知识：这个过程是没有止境的，比前面的都重要～</li>
+</ul>
+
+<p>好了，大概说了一些基本的历程，接下来想想总结怎么写，这个问题直到现在还在困扰着我，当我写完这个练手项目的时候我就在想着我一定要写一篇总结，但是具体的格式内容我却迟迟无法定夺，原先我想的是写成教程式的总结，什么从零开始的golang学习啊什么的，可以利用我写项目每天的日报来由浅入深的讲解自己的学习，但是我一想，本身也才学了三周的golang，会点皮毛，写出这种东西要是有错误就得狠狠地背锅，所以思来想去还是打算写成给自己看的，和给有兴趣看的人的一篇代码分析型文章吧～虽然我也不知道最后会是个什么样子。</p>
+
+<div class="admonition tip"><p class="admonition-title">注意</p>
+  
+
+<div class="admonition tip">
+  <p>以下内容基于Gin与Mongodb，</p>
+
+<p>没有一定基础可能会不知所云？</p>
+
+</div>
+
+<div class="admonition tip">
+  <p>作为一名初级玩家的回顾，</p>
+
+<p>可能存在思路清奇，代码奇特，逻辑南辕北辙等骚操作，</p>
+
+<p>还望各位大佬多提意见！</p>
+
+</div>
+
+<p></div></p>
+
+<h3 id="一-需求分析">一、需求分析</h3>
+
+<p>我们再看这个项目的需求，由于本项目没有一个规定的API文档，所以我们可以自（mang）由（mu）分析定制：</p>
+
+<p>首先，用户分为管理员与普通用户，我们假定只有一位管理员，然后普通用户不限。</p>
+
+<p>其次，我们看看两类用户分别需要实现的功能：</p>
+
+<ul>
+<li>管理员：登录、删除成员、查看一个成员、查看所有成员，一共四个；</li>
+<li>普通用户：注册、登录、修改信息，一共三个。</li>
+</ul>
+
+<p>之后，我们看看功能背后的具体实现操作，</p>
+
+<ul>
+<li><p>注册属于数据库增操作，</p></li>
+
+<li><p>删除用户属于数据库删除操作，</p></li>
+
+<li><p>登录、查看用户属于数据库查操作，</p></li>
+
+<li><p>更新用户信息属于数据库改操作。</p></li>
+</ul>
+
+<p>这时我们发现功能虽然看起来多，但是总结起来也就是那么几个基本的数据库操作所以只要学会了在特定语言环境下的数据库操作规范，就可以实现这些功能，但是还有一个问题，我们希望用户在每次访问路由的时候都能记住他的登录状态，不然登陆的作用就失去了，所以考虑用到一个jwt中间件，在用户登录的时候返回一个即时生成的TOKEN，然后下次用户发出请求的时候只需要带上 这个TOKEN服务器就能判断用户的登录状态，以此判断是否有权限进行特定的操作，例如用户的信息修改，管理员的那些高级权限操作。</p>
+
+<p>那么这时候我们就可以试着按照规范将路由写出来</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">initRouter</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">r</span> <span class="o">:=</span> <span class="nx">gin</span><span class="p">.</span><span class="nf">New</span><span class="p">()</span> <span class="c1">//新建路由
+</span><span class="c1"></span>
+	<span class="nx">user</span> <span class="o">:=</span> <span class="nx">r</span><span class="p">.</span><span class="nf">Group</span><span class="p">(</span><span class="s">&#34;/user&#34;</span><span class="p">)</span> <span class="c1">//用户路由组
+</span><span class="c1"></span>	<span class="nx">user</span><span class="p">.</span><span class="nf">POST</span><span class="p">(</span><span class="s">&#34;/sign&#34;</span><span class="p">,</span> <span class="p">)</span>     <span class="c1">//用户注册
+</span><span class="c1"></span>	<span class="nx">user</span><span class="p">.</span><span class="nf">POST</span><span class="p">(</span><span class="s">&#34;/login&#34;</span><span class="p">,</span> <span class="p">)</span>    <span class="c1">//用户登录
+</span><span class="c1"></span>	<span class="nx">user</span><span class="p">.</span><span class="nf">Use</span><span class="p">()</span>               <span class="c1">//用户中间件
+</span><span class="c1"></span>	<span class="p">{</span>
+		<span class="nx">user</span><span class="p">.</span><span class="nf">POST</span><span class="p">(</span><span class="s">&#34;/hello&#34;</span><span class="p">,</span> <span class="p">)</span>  <span class="c1">//用户中间件测试
+</span><span class="c1"></span>		<span class="nx">user</span><span class="p">.</span><span class="nf">POST</span><span class="p">(</span><span class="s">&#34;/update&#34;</span><span class="p">,</span> <span class="p">)</span> <span class="c1">//用户信息修改
+</span><span class="c1"></span>	<span class="p">}</span>
+
+	<span class="nx">admin</span> <span class="o">:=</span> <span class="nx">r</span><span class="p">.</span><span class="nf">Group</span><span class="p">(</span><span class="s">&#34;/admin&#34;</span><span class="p">)</span> <span class="c1">//管理员路由组
+</span><span class="c1"></span>	<span class="nx">admin</span><span class="p">.</span><span class="nf">POST</span><span class="p">(</span><span class="s">&#34;/login&#34;</span><span class="p">,</span> <span class="p">)</span>     <span class="c1">//管理员登录（管理员账户已经内置）
+</span><span class="c1"></span>	<span class="nx">admin</span><span class="p">.</span><span class="nf">Use</span><span class="p">()</span>                <span class="c1">//管理员中间件
+</span><span class="c1"></span>	<span class="p">{</span>
+		<span class="nx">admin</span><span class="p">.</span><span class="nf">POST</span><span class="p">(</span><span class="s">&#34;/hello&#34;</span><span class="p">,</span> <span class="p">)</span>  <span class="c1">//中间件测试
+</span><span class="c1"></span>		<span class="nx">admin</span><span class="p">.</span><span class="nf">POST</span><span class="p">(</span><span class="s">&#34;/find&#34;</span><span class="p">,</span> <span class="p">)</span>   <span class="c1">//查找某个用户
+</span><span class="c1"></span>		<span class="nx">admin</span><span class="p">.</span><span class="nf">POST</span><span class="p">(</span><span class="s">&#34;/show&#34;</span><span class="p">,</span> <span class="p">)</span>   <span class="c1">//查看全部用户
+</span><span class="c1"></span>		<span class="nx">admin</span><span class="p">.</span><span class="nf">POST</span><span class="p">(</span><span class="s">&#34;/delete&#34;</span><span class="p">,</span> <span class="p">)</span> <span class="c1">//删除某个用户
+</span><span class="c1"></span>	<span class="p">}</span>
+
+	<span class="nx">_</span> <span class="p">=</span> <span class="nx">r</span><span class="p">.</span><span class="nf">Run</span><span class="p">(</span><span class="s">&#34;:8080&#34;</span><span class="p">)</span> <span class="c1">//监听端口8080
+</span><span class="c1"></span><span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>然后将各个代码部分完善即可，完善过程是一个由浅入深的自我探索过程，如果你有兴趣一定会非常有收获。</p>
+
+<h3 id="二-代码分析">二、代码分析</h3>
+
+<h4 id="1-文件结构">1.文件结构</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">.
+├── controller                 
+│   ├── adminController.go
+│   └── userController.go
+├── database
+│   └── database.go
+├── go.mod
+├── go.sum
+├── main.go
+├── middleware
+│   ├── adminJwt.go
+│   └── userJwt.go
+├── model
+│   └── user.go
+├── README.md
+└── router
+    └── router.go</pre></td></tr></table>
+</div>
+</div>
+<p>逐个介绍根目录下的各个目录和文件的作用</p>
+
+<ul>
+<li><p><code>controller</code>：放置业务逻辑代码，收到路由请求后首先调用该文件夹内函数，进行一些逻辑分析判断与少数的数据处理</p></li>
+
+<li><p><code>database</code>：放置数据库初始化连接代码，系统初始化时调用，如果数据库初始化失败直接报错并退出</p></li>
+
+<li><p><code>go.mod</code>和<code>go.sum</code>：放置代码引用库的版本信息，与项目本身功能无关</p></li>
+
+<li><p><code>main.go</code>：系统的入口函数，初始化一切</p></li>
+
+<li><p><code>middleware</code>：中间件，在需要中间函数（如登录认证）的时候调用</p></li>
+
+<li><p><code>model</code>：包含数据库操作，给controller中的函数调用</p></li>
+
+<li><p><code>router</code>：初始化路由</p></li>
+</ul>
+
+<h4 id="2-请求过程">2.请求过程</h4>
+
+<p>下面具体说一下用户发送请求到我们做出响应的整个过程，以最简单的注册接口为例。</p>
+
+<ul>
+<li><p>注意这里的请求方法是POST，对应的用户层面操作是用户填完信息点击注册的时候。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go">	<span class="nx">user</span><span class="p">.</span><span class="nf">POST</span><span class="p">(</span><span class="s">&#34;/sign&#34;</span><span class="p">,</span> <span class="nx">SignUpHandler</span><span class="p">)</span>     <span class="o">//</span><span class="nx">用户注册</span></code></pre></td></tr></table>
+</div>
+</div></li>
+
+<li><p>用户点击注册按钮，将信息以特定的形式发送到服务器，服务器接受到请求</p></li>
+
+<li><p>调用<code>controllers</code>包中的<code>SignUpHandler</code>函数，进行基本的业务逻辑处理，包括验证信息的正确性合法性等，确认无误后将数据送入数据库操作层</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">//localhost:8080/sign　　
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">SignHandler</span><span class="p">(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">gin</span><span class="p">.</span><span class="nx">Context</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">log</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;&gt;&gt;&gt;User Signing Up&lt;&lt;&lt;&#34;</span><span class="p">)</span>
+	<span class="nx">newuser</span> <span class="o">:=</span> <span class="nx">model</span><span class="p">.</span><span class="nx">SignForm</span><span class="p">{}</span>
+  
+	<span class="c1">//bind sign massage
+</span><span class="c1"></span>	<span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">c</span><span class="p">.</span><span class="nf">ShouldBind</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">newuser</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="nx">c</span><span class="p">.</span><span class="nf">JSON</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="nx">gin</span><span class="p">.</span><span class="nx">H</span><span class="p">{</span><span class="s">&#34;warning&#34;</span><span class="p">:</span> <span class="s">&#34;invalid massage&#34;</span><span class="p">})</span>
+		<span class="k">return</span>
+	<span class="p">}</span>
+  
+	<span class="c1">//check id availability
+</span><span class="c1"></span>	<span class="nx">filter</span> <span class="o">:=</span> <span class="nx">bson</span><span class="p">.</span><span class="nx">M</span><span class="p">{</span><span class="s">&#34;id&#34;</span><span class="p">:</span> <span class="nx">newuser</span><span class="p">.</span><span class="nx">Id</span><span class="p">}</span>
+	<span class="k">if</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">database</span><span class="p">.</span><span class="nf">FindUser</span><span class="p">(</span><span class="nx">filter</span><span class="p">);</span> <span class="nx">err</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="nx">c</span><span class="p">.</span><span class="nf">JSON</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="nx">gin</span><span class="p">.</span><span class="nx">H</span><span class="p">{</span><span class="s">&#34;warning&#34;</span><span class="p">:</span> <span class="s">&#34;invalid id!&#34;</span><span class="p">})</span>
+		<span class="k">return</span>
+	<span class="p">}</span>
+  
+	<span class="c1">//encode psw to md5 before insert
+</span><span class="c1"></span>	<span class="nx">newuser</span><span class="p">.</span><span class="nx">Psw</span> <span class="p">=</span> <span class="nf">encode</span><span class="p">(</span><span class="nx">newuser</span><span class="p">.</span><span class="nx">Psw</span><span class="p">)</span>
+  
+	<span class="c1">//insert new user
+</span><span class="c1"></span>	<span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">database</span><span class="p">.</span><span class="nf">InsertUser</span><span class="p">(</span><span class="nx">newuser</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="nx">c</span><span class="p">.</span><span class="nf">JSON</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="nx">gin</span><span class="p">.</span><span class="nx">H</span><span class="p">{</span><span class="s">&#34;statu&#34;</span><span class="p">:</span> <span class="s">&#34;sorry, sign up failed!&#34;</span><span class="p">})</span>
+	<span class="p">}</span>
+	<span class="nx">c</span><span class="p">.</span><span class="nf">JSON</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="nx">gin</span><span class="p">.</span><span class="nx">H</span><span class="p">{</span><span class="s">&#34;statu&#34;</span><span class="p">:</span> <span class="s">&#34;sign up success!&#34;</span><span class="p">})</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div></li>
+
+<li><p>调用<code>models</code>层中的新增用户函数，进行数据库的底层操作，并返回结果给上层。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">//new user sign in
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">InsertUser</span><span class="p">(</span><span class="nx">user</span> <span class="nx">model</span><span class="p">.</span><span class="nx">SignForm</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">UserColl</span><span class="p">.</span><span class="nf">InsertOne</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span> <span class="nx">bson</span><span class="p">.</span><span class="nx">M</span><span class="p">{</span>
+		<span class="s">&#34;type&#34;</span><span class="p">:</span>  <span class="s">&#34;user&#34;</span><span class="p">,</span>
+		<span class="s">&#34;id&#34;</span><span class="p">:</span>    <span class="nx">user</span><span class="p">.</span><span class="nx">Id</span><span class="p">,</span>
+		<span class="s">&#34;psw&#34;</span><span class="p">:</span>   <span class="nx">user</span><span class="p">.</span><span class="nx">Psw</span><span class="p">,</span>
+		<span class="s">&#34;name&#34;</span><span class="p">:</span>  <span class="nx">user</span><span class="p">.</span><span class="nx">Name</span><span class="p">,</span>
+		<span class="s">&#34;tel&#34;</span><span class="p">:</span>   <span class="nx">user</span><span class="p">.</span><span class="nx">Tel</span><span class="p">,</span>
+		<span class="s">&#34;email&#34;</span><span class="p">:</span> <span class="nx">user</span><span class="p">.</span><span class="nx">Email</span><span class="p">});</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="nx">err</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="kc">nil</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div></li>
+
+<li><p>逐层返回结果，最后返回给用户，完成一次请求与响应操作。</p></li>
+</ul>
+
+<h3 id="三-项目总结">三、项目总结</h3>
+
+<p>回头看，这是一个十分基础的练手项目，很适合无基础新手入门学习，收获也会比较大，会有很多小困难，但是最后的成就感也有。下面是技术总结：</p>
+
+<ul>
+<li>golang的基本语法</li>
+<li>gin框架的基本用法</li>
+<li>数据库的基本操作</li>
+<li>加密认证的实现-jwt</li>
+<li>mvc框架的基本理解</li>
+<li>。。。等我想起来再补充</li>
+</ul>
+    </div>
+
+    
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/golang/">golang</a>
+          <a href="/tags/gin/">gin</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/20190813-ubuntumongodb/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">Ubuntu18.04下MongoDB的安装、配置、远程连接</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/post/20190722-hugobuild/">
+            <span class="next-text nav-default">Hugo博客搭建</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+  
+  
+  <div id="vcomments"></div>
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+  <script type="text/javascript">
+    new Valine({
+        el: '#vcomments' ,
+        appId: 'x6Epf7YC8YLIJRYK1pvsE1U6-gzGzoHsz',
+        appKey: 'lcJGkSFUN3dy9qMJRL2E56jP',
+        notify:  false , 
+        verify:  false , 
+        avatar:'wavatar', 
+        placeholder: '说点什么吧...',
+        visitor:  false 
+    });
+  </script>
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+</div>
+
+<div class="copyright">
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> site pv: <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> </span>
+      <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> site uv: <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2018 - 
+    2019
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Will Xu</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.min.js" integrity="sha256-jwCP0NAdCBloaIWTWHmW4i3snUNMHUNO+jr9rYd2iOI=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.locales.min.js" integrity="sha256-ZwofwC1Lf/faQCzN7nZtfijVV6hSwxjQMwXL4gn9qU8=" crossorigin="anonymous"></script>
+  <script><!-- NOTE: timeago.js uses the language code format like "zh_CN" (underscore and case sensitive) -->
+    var languageCode = "en".replace(/-/g, '_').replace(/_(.*)/, function ($0, $1) {return $0.replace($1, $1.toUpperCase());});
+    timeago().render(document.querySelectorAll('.timeago'), languageCode);
+    timeago.cancel();  
+  </script>
+<script type="text/javascript" src="/dist/even.f79f403f.min.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

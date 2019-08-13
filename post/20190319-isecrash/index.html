@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>关于Xilinx_ISE 14.7在Win10下崩溃闪退的兼容性问题解决 - Will Blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="Will Xu" /><meta name="description" content="问题表现：
+ 打开工程时闪退 新建工程打开存放文件夹位置时闪退 编译闪退 注意：以上问题一般同步存在 " />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.57.0-DEV with even 4.0.0" />
+
+
+<link rel="canonical" href="https://willxu24.github.io/post/20190319-isecrash/" />
+  <link href="/post/20190319-isecrash/" rel="alternate" type="application/rss+xml" title="Will Blog" />
+  <link href="/post/20190319-isecrash/" rel="feed" type="application/rss+xml" title="Will Blog" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link href="/dist/even.bc2f3a2c.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="关于Xilinx_ISE 14.7在Win10下崩溃闪退的兼容性问题解决" />
+<meta property="og:description" content="问题表现：
+
+
+打开工程时闪退
+新建工程打开存放文件夹位置时闪退
+编译闪退
+注意：以上问题一般同步存在
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://willxu24.github.io/post/20190319-isecrash/" />
+<meta property="article:published_time" content="2019-03-19T23:14:27+08:00" />
+<meta property="article:modified_time" content="2019-03-19T23:14:27+08:00" />
+<meta itemprop="name" content="关于Xilinx_ISE 14.7在Win10下崩溃闪退的兼容性问题解决">
+<meta itemprop="description" content="问题表现：
+
+
+打开工程时闪退
+新建工程打开存放文件夹位置时闪退
+编译闪退
+注意：以上问题一般同步存在
+">
+
+
+<meta itemprop="datePublished" content="2019-03-19T23:14:27&#43;08:00" />
+<meta itemprop="dateModified" content="2019-03-19T23:14:27&#43;08:00" />
+<meta itemprop="wordCount" content="372">
+
+
+
+<meta itemprop="keywords" content="ISE,Win10," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="关于Xilinx_ISE 14.7在Win10下崩溃闪退的兼容性问题解决"/>
+<meta name="twitter:description" content="问题表现：
+
+
+打开工程时闪退
+新建工程打开存放文件夹位置时闪退
+编译闪退
+注意：以上问题一般同步存在
+"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Will Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">Will Blog</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">关于Xilinx_ISE 14.7在Win10下崩溃闪退的兼容性问题解决</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2019-03-19 </span>
+        <div class="post-category">
+            <a href="/categories/%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/"> 踩坑记录 </a>
+            </div>
+          <span class="more-meta"> 372 words </span>
+          <span class="more-meta"> 1 min read </span>
+        <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> times read </span>
+      </div>
+    </header>
+
+    
+  <div class="post-outdated">
+    <div class="hint">
+      <p>[NOTE] Updated <span class="timeago" datetime="2019-03-19T23:14:27" title="March 19, 2019">March 19, 2019</span>. This article may have outdated content or subject matter.</p>
+    </div>
+  </div>
+    <div class="post-content">
+      <p>问题表现：</p>
+
+<ul>
+<li>打开工程时闪退</li>
+<li>新建工程打开存放文件夹位置时闪退</li>
+<li>编译闪退</li>
+<li>注意：以上问题一般同步存在</li>
+</ul>
+
+<p>解决方案：</p>
+
+<ul>
+<li>在软件安装路径<code>C:\Xilinx\14.7\ISE_DS\ISE\lib\nt64</code>下查找关键字<code>libPortability</code></li>
+</ul>
+
+<p><img src="https://i.loli.net/2019/03/20/5c91e06b12b3a.png" alt="" /></p>
+
+<ul>
+<li>将<code>libPortability.dll</code>重名为<code>libPortability.dll.backup</code></li>
+<li>将 <code>libPortabilityNOSH.dll</code> 原地复制一份，并重命名为<code>libPortability.dll</code> ，再将 <code>libPortabilityNOSH.dll</code> 复制一份至桌面</li>
+</ul>
+
+<p><img src="https://i.loli.net/2019/03/20/5c91e1024eb2f.png" alt="" /></p>
+
+<ul>
+<li>在软件安装路径<code>C:\Xilinx\14.7\ISE_DS\common\lib\nt64</code>下查找关键字<code>libPortability</code></li>
+
+<li><p>将<code>libPortability.dll</code>重名为<code>libPortability.dll.backup</code></p></li>
+
+<li><p>将桌面的<code>libPortabilityNOSH.dll</code> 复制一份至此路径，并重命名为<code>libPortability.dll</code></p></li>
+</ul>
+
+<p><img src="https://i.loli.net/2019/03/20/5c91e266854fb.png" alt="" /></p>
+
+<ul>
+<li>结束</li>
+</ul>
+    </div>
+
+    
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/ise/">ISE</a>
+          <a href="/tags/win10/">Win10</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/20190403-mipsinstr/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">简单MIPS汇编语言设计</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/post/20190316-golandlicence/">
+            <span class="next-text nav-default">JetBrains家的GoLand激活方法</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+  
+  
+  <div id="vcomments"></div>
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+  <script type="text/javascript">
+    new Valine({
+        el: '#vcomments' ,
+        appId: 'x6Epf7YC8YLIJRYK1pvsE1U6-gzGzoHsz',
+        appKey: 'lcJGkSFUN3dy9qMJRL2E56jP',
+        notify:  false , 
+        verify:  false , 
+        avatar:'wavatar', 
+        placeholder: '说点什么吧...',
+        visitor:  false 
+    });
+  </script>
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+</div>
+
+<div class="copyright">
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> site pv: <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> </span>
+      <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> site uv: <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2018 - 
+    2019
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Will Xu</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.min.js" integrity="sha256-jwCP0NAdCBloaIWTWHmW4i3snUNMHUNO+jr9rYd2iOI=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.locales.min.js" integrity="sha256-ZwofwC1Lf/faQCzN7nZtfijVV6hSwxjQMwXL4gn9qU8=" crossorigin="anonymous"></script>
+  <script><!-- NOTE: timeago.js uses the language code format like "zh_CN" (underscore and case sensitive) -->
+    var languageCode = "en".replace(/-/g, '_').replace(/_(.*)/, function ($0, $1) {return $0.replace($1, $1.toUpperCase());});
+    timeago().render(document.querySelectorAll('.timeago'), languageCode);
+    timeago.cancel();  
+  </script>
+<script type="text/javascript" src="/dist/even.f79f403f.min.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

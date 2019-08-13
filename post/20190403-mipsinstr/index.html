@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>简单MIPS汇编语言设计 - Will Blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="Will Xu" /><meta name="description" content="用汇编程序实现以下伪代码，要求采用移位指令实现乘除法运算。
+1 2 3 4 5 6 7 8  int main() { int K, Y ; int Z[50] ; Y = 56; for(K=0;K&amp;lt;50;K&#43;&#43;) Z[K] = Y - 16 * ( K / 4 &#43; 210 ) ; }  " />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.57.0-DEV with even 4.0.0" />
+
+
+<link rel="canonical" href="https://willxu24.github.io/post/20190403-mipsinstr/" />
+  <link href="/post/20190403-mipsinstr/" rel="alternate" type="application/rss+xml" title="Will Blog" />
+  <link href="/post/20190403-mipsinstr/" rel="feed" type="application/rss+xml" title="Will Blog" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link href="/dist/even.bc2f3a2c.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="简单MIPS汇编语言设计" />
+<meta property="og:description" content="用汇编程序实现以下伪代码，要求采用移位指令实现乘除法运算。
+
+
+1
+2
+3
+4
+5
+6
+7
+8
+
+
+int main() 
+{
+int K, Y ; 
+int Z[50] ; 
+Y = 56;
+for(K=0;K&lt;50;K&#43;&#43;) 
+Z[K] = Y - 16 * ( K / 4 &#43; 210 ) ;
+}
+
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://willxu24.github.io/post/20190403-mipsinstr/" />
+<meta property="article:published_time" content="2019-04-03T23:14:52+08:00" />
+<meta property="article:modified_time" content="2019-04-03T23:14:52+08:00" />
+<meta itemprop="name" content="简单MIPS汇编语言设计">
+<meta itemprop="description" content="用汇编程序实现以下伪代码，要求采用移位指令实现乘除法运算。
+
+
+1
+2
+3
+4
+5
+6
+7
+8
+
+
+int main() 
+{
+int K, Y ; 
+int Z[50] ; 
+Y = 56;
+for(K=0;K&lt;50;K&#43;&#43;) 
+Z[K] = Y - 16 * ( K / 4 &#43; 210 ) ;
+}
+
+">
+
+
+<meta itemprop="datePublished" content="2019-04-03T23:14:52&#43;08:00" />
+<meta itemprop="dateModified" content="2019-04-03T23:14:52&#43;08:00" />
+<meta itemprop="wordCount" content="806">
+
+
+
+<meta itemprop="keywords" content="mips,汇编语言," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="简单MIPS汇编语言设计"/>
+<meta name="twitter:description" content="用汇编程序实现以下伪代码，要求采用移位指令实现乘除法运算。
+
+
+1
+2
+3
+4
+5
+6
+7
+8
+
+
+int main() 
+{
+int K, Y ; 
+int Z[50] ; 
+Y = 56;
+for(K=0;K&lt;50;K&#43;&#43;) 
+Z[K] = Y - 16 * ( K / 4 &#43; 210 ) ;
+}
+
+"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Will Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">Will Blog</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">简单MIPS汇编语言设计</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2019-04-03 </span>
+        <div class="post-category">
+            <a href="/categories/%E5%BE%AE%E6%9C%BA%E5%8E%9F%E7%90%86/"> 微机原理 </a>
+            </div>
+          <span class="more-meta"> 806 words </span>
+          <span class="more-meta"> 2 mins read </span>
+        <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> times read </span>
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#一-任务分析">一、任务分析</a>
+<ul>
+<li><a href="#1-需要用到的数据类型">1. 需要用到的数据类型</a></li>
+<li><a href="#2-需要的汇编语言类型">2. 需要的汇编语言类型</a></li>
+<li><a href="#3-基本思路">3. 基本思路</a></li>
+</ul></li>
+<li><a href="#二-源码">二、源码</a></li>
+<li><a href="#三-运行结果">三、 运行结果</a>
+<ul>
+<li><a href="#1-代码段内存映像">1. 代码段内存映像</a></li>
+<li><a href="#2-数据段内存映像">2. 数据段内存映像</a></li>
+</ul></li>
+<li><a href="#四-问题及改进">四、 问题及改进</a>
+<ul>
+<li><a href="#1-存在的问题">1.  存在的问题</a></li>
+<li><a href="#2-代码改进">2. 代码改进</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+  </div>
+</div>
+  <div class="post-outdated">
+    <div class="hint">
+      <p>[NOTE] Updated <span class="timeago" datetime="2019-04-03T23:14:52" title="April 3, 2019">April 3, 2019</span>. This article may have outdated content or subject matter.</p>
+    </div>
+  </div>
+    <div class="post-content">
+      <p>用汇编程序实现以下伪代码，要求采用移位指令实现乘除法运算。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-c" data-lang="c"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-c" data-lang="c"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> 
+<span class="p">{</span>
+<span class="kt">int</span> <span class="n">K</span><span class="p">,</span> <span class="n">Y</span> <span class="p">;</span> 
+<span class="kt">int</span> <span class="n">Z</span><span class="p">[</span><span class="mi">50</span><span class="p">]</span> <span class="p">;</span> 
+<span class="n">Y</span> <span class="o">=</span> <span class="mi">56</span><span class="p">;</span>
+<span class="k">for</span><span class="p">(</span><span class="n">K</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">K</span><span class="o">&lt;</span><span class="mi">50</span><span class="p">;</span><span class="n">K</span><span class="o">++</span><span class="p">)</span> 
+<span class="n">Z</span><span class="p">[</span><span class="n">K</span><span class="p">]</span> <span class="o">=</span> <span class="n">Y</span> <span class="o">-</span> <span class="mi">16</span> <span class="o">*</span> <span class="p">(</span> <span class="n">K</span> <span class="o">/</span> <span class="mi">4</span> <span class="o">+</span> <span class="mi">210</span> <span class="p">)</span> <span class="p">;</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<h2 id="一-任务分析">一、任务分析</h2>
+
+<h3 id="1-需要用到的数据类型">1. 需要用到的数据类型</h3>
+
+<ul>
+<li><p>立即数</p></li>
+
+<li><p>字（4字节）</p></li>
+
+<li><p>字数组</p></li>
+</ul>
+
+<h3 id="2-需要的汇编语言类型">2. 需要的汇编语言类型</h3>
+
+<ul>
+<li><p>构成循环的小于设置指令（slt）、相等转移指令（beq）和跳转指令（j）</p></li>
+
+<li><p>基本运算指令（add、sub），移位指令（sll、srl）</p></li>
+
+<li><p>数据传递指令（lw、sw）</p></li>
+</ul>
+
+<h3 id="3-基本思路">3. 基本思路</h3>
+
+<ul>
+<li><p>分配数组空间</p></li>
+
+<li><p>定义K、Y，存储数组初始地址</p></li>
+
+<li><p>建立循环条件</p></li>
+
+<li><p>运算赋值并写入内存</p></li>
+</ul>
+
+<h2 id="二-源码">二、源码</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-assembly" data-lang="assembly"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-assembly" data-lang="assembly">.data 
+z:.space 200 #分配数组空间
+ 
+.text
+main:
+la $t0, z  #数组z初始地址-&gt;to
+li $t1, 0  #定义并赋值K-&gt;t1
+li $t2, 56 #定义并赋值Y-&gt;t2
+
+loop:
+slti $t3, $t1, 50   #判断k是否于50,k&lt;50,t3=1
+beq $t3, $0, exit   #当k大于等于50, 跳转退出
+srl $t4, $t1, 2     #k/4
+addi $t4, $t4, 210  #k/4+210
+sll $t4, $t4, 4     #16*（k/4+210）
+sub $t4, $t2, $t4   #y-16*（k/4+210）
+sw $t4, 0($t0)      #写入z［k］
+addi $t0, $t0, 4    #指向数组下一位
+addi $t1, $t1, 1    #k+1
+j loop              #循环
+
+exit:
+li $v0, 10
+syscall</code></pre></td></tr></table>
+</div>
+</div>
+<h2 id="三-运行结果">三、 运行结果</h2>
+
+<h3 id="1-代码段内存映像">1. 代码段内存映像</h3>
+
+<p><img src="https://i.loli.net/2019/04/12/5cb01a83e0bef.png" alt="" /></p>
+
+<h3 id="2-数据段内存映像">2. 数据段内存映像</h3>
+
+<p><img src="https://i.loli.net/2019/04/12/5cb01a9516097.png" alt="" /></p>
+
+<h2 id="四-问题及改进">四、 问题及改进</h2>
+
+<h3 id="1-存在的问题">1.  存在的问题</h3>
+
+<p>在qtspim中无法在窗口实现输出</p>
+
+<h3 id="2-代码改进">2. 代码改进</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-assembly" data-lang="assembly"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-assembly" data-lang="assembly">.data 
+.align 2 
+z:.space 200 #分配数组空间
+str:.asciiz &#34;Z[&#34; 
+str1:.asciiz &#34;]=&#34; 
+str2:.asciiz &#34;\n&#34; 
+.globl main 
+
+.text 
+main: 
+la $t0,z    #数组z初始地址-&gt;to
+li $t1,0    #定义并赋值K-&gt;t1
+li $t2,56   #定义并赋值Y-&gt;t2
+loop:
+slti $t3, $t1, 50   #判断k是否于50,k&lt;50,t3=1
+beq $t3, $0, exit   #当k大于等于50, 跳转退出
+srl $t4, $t1, 2     #k/4
+addi $t4, $t4, 210  #k/4+210
+sll $t4, $t4, 4     #16*（k/4+210）
+sub $t4, $t2, $t4   #y-16*（k/4+210）
+sw $t4, 0($t0)      #写入z［k］
+addi $t0, $t0, 4    #指向数组下一位
+
+li $v0,4 
+la  $a0,str 
+syscall             #输出&#34;Z[&#34; 
+li $v0,1 
+add $a0,$0,$t1 
+syscall             #k 
+li $v0,4 
+la $a0,str1         #输出&#34;]=&#34; 
+syscall 
+li $v0,1 
+add $a0,$0,$t4
+syscall             #输出数组值
+li $v0,4 
+la $a0,str2         #换行
+syscall 
+addi $t1, $t1, 1    #k+1
+j loop              #循环
+exit:
+li $v0, 10
+syscall</code></pre></td></tr></table>
+</div>
+</div>
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">Will Xu</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2019-04-03
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/mips/">mips</a>
+          <a href="/tags/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80/">汇编语言</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/20190705-mongodbstudy/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">Mongodb学习笔记</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/post/20190319-isecrash/">
+            <span class="next-text nav-default">关于Xilinx_ISE 14.7在Win10下崩溃闪退的兼容性问题解决</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+  
+  
+  <div id="vcomments"></div>
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+  <script type="text/javascript">
+    new Valine({
+        el: '#vcomments' ,
+        appId: 'x6Epf7YC8YLIJRYK1pvsE1U6-gzGzoHsz',
+        appKey: 'lcJGkSFUN3dy9qMJRL2E56jP',
+        notify:  false , 
+        verify:  false , 
+        avatar:'wavatar', 
+        placeholder: '说点什么吧...',
+        visitor:  false 
+    });
+  </script>
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+</div>
+
+<div class="copyright">
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> site pv: <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> </span>
+      <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> site uv: <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2018 - 
+    2019
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Will Xu</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.min.js" integrity="sha256-jwCP0NAdCBloaIWTWHmW4i3snUNMHUNO+jr9rYd2iOI=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.locales.min.js" integrity="sha256-ZwofwC1Lf/faQCzN7nZtfijVV6hSwxjQMwXL4gn9qU8=" crossorigin="anonymous"></script>
+  <script><!-- NOTE: timeago.js uses the language code format like "zh_CN" (underscore and case sensitive) -->
+    var languageCode = "en".replace(/-/g, '_').replace(/_(.*)/, function ($0, $1) {return $0.replace($1, $1.toUpperCase());});
+    timeago().render(document.querySelectorAll('.timeago'), languageCode);
+    timeago.cancel();  
+  </script>
+<script type="text/javascript" src="/dist/even.f79f403f.min.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

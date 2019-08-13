@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>“拯救者r720” on Will Blog</title>
+    <link>https://willxu24.github.io/tags/%E6%8B%AF%E6%95%91%E8%80%85r720/</link>
+    <description>Recent content in “拯救者r720” on Will Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Thu, 11 Jul 2019 23:05:04 +0800</lastBuildDate>
+    
+	<atom:link href="https://willxu24.github.io/tags/%E6%8B%AF%E6%95%91%E8%80%85r720/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Manjaro安装与配置</title>
+      <link>https://willxu24.github.io/post/20190711-manjaroinstall/</link>
+      <pubDate>Thu, 11 Jul 2019 23:05:04 +0800</pubDate>
+      
+      <guid>https://willxu24.github.io/post/20190711-manjaroinstall/</guid>
+      <description>&lt;p&gt;manjaro是什么？移步&lt;a href=&#34;https://www.manjaro.cn/category/about-manjaro-linux&#34;&gt;manjaro中文论坛&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;manjaro的特点：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;基于arch的发行版，滚动更新使软件保持最新&lt;/li&gt;
+&lt;li&gt;新手友好型，没时间折腾原生arch的选择&lt;/li&gt;
+&lt;li&gt;独特的AUR软件仓库有着世界上最多的软件资源&lt;/li&gt;
+&lt;li&gt;官方版本三个GUI界面可选，社区版本提供更多&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;总结：用起来爽！&lt;/p&gt;
+
+&lt;p&gt;本文为基于R720与manjaro-gnome的安装配置&lt;strong&gt;不完全教程&lt;/strong&gt;，主要目的为个人配置备忘录&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>拯救者R720笔记本win10&#43;Mac12.6双系统教程</title>
+      <link>https://willxu24.github.io/post/20181206-macosinstall/</link>
+      <pubDate>Thu, 06 Dec 2018 23:11:33 +0800</pubDate>
+      
+      <guid>https://willxu24.github.io/post/20181206-macosinstall/</guid>
+      <description>&lt;p&gt;&lt;img src=&#34;https://i.loli.net/2018/12/30/5c289373e8dcf.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;声明：该教程仅供个人学习与参考！不得用于商用！谢谢合作！&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

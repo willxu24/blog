@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>MongoDB Go Driver基础用法小结 - Will Blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="will xu" /><meta name="description" content="mongoDB的官方golang支持库，尚处于测试阶段。
+以下为示例代码分析总结，实现最基本的CRUD操作，
+可供初学者学习参考和引用。
+注意：源码并不能直接运行！
+" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.57.0-DEV with even 4.0.0" />
+
+
+<link rel="canonical" href="https://willxu24.github.io/post/20190710-mongogodriver/" />
+  <link href="/post/20190710-mongogodriver/" rel="alternate" type="application/rss+xml" title="Will Blog" />
+  <link href="/post/20190710-mongogodriver/" rel="feed" type="application/rss+xml" title="Will Blog" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link href="/dist/even.bc2f3a2c.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="MongoDB Go Driver基础用法小结" />
+<meta property="og:description" content="mongoDB的官方golang支持库，尚处于测试阶段。
+
+以下为示例代码分析总结，实现最基本的CRUD操作，
+
+可供初学者学习参考和引用。
+
+注意：源码并不能直接运行！" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://willxu24.github.io/post/20190710-mongogodriver/" />
+<meta property="article:published_time" content="2019-07-10T14:04:35+08:00" />
+<meta property="article:modified_time" content="2019-08-01T14:04:35+08:00" />
+<meta itemprop="name" content="MongoDB Go Driver基础用法小结">
+<meta itemprop="description" content="mongoDB的官方golang支持库，尚处于测试阶段。
+
+以下为示例代码分析总结，实现最基本的CRUD操作，
+
+可供初学者学习参考和引用。
+
+注意：源码并不能直接运行！">
+
+
+<meta itemprop="datePublished" content="2019-07-10T14:04:35&#43;08:00" />
+<meta itemprop="dateModified" content="2019-08-01T14:04:35&#43;08:00" />
+<meta itemprop="wordCount" content="1154">
+
+
+
+<meta itemprop="keywords" content="MongoDB," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="MongoDB Go Driver基础用法小结"/>
+<meta name="twitter:description" content="mongoDB的官方golang支持库，尚处于测试阶段。
+
+以下为示例代码分析总结，实现最基本的CRUD操作，
+
+可供初学者学习参考和引用。
+
+注意：源码并不能直接运行！"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Will Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">Will Blog</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">MongoDB Go Driver基础用法小结</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2019-07-10 </span>
+        <div class="post-category">
+            <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"> 数据库 </a>
+            </div>
+          <span class="more-meta"> 1154 words </span>
+          <span class="more-meta"> 3 mins read </span>
+        <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> times read </span>
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#安装">安装</a></li>
+<li><a href="#初始化">初始化</a></li>
+<li><a href="#增">增</a>
+<ul>
+<li><a href="#单个新增">单个新增</a></li>
+<li><a href="#多个新增">多个新增</a></li>
+</ul></li>
+<li><a href="#删">删</a>
+<ul>
+<li><a href="#单个删除">单个删除</a></li>
+<li><a href="#多个删除">多个删除</a></li>
+</ul></li>
+<li><a href="#查">查</a>
+<ul>
+<li><a href="#单个查找">单个查找</a></li>
+<li><a href="#多个查找">多个查找</a></li>
+</ul></li>
+<li><a href="#改">改</a>
+<ul>
+<li><a href="#单个更改">单个更改</a></li>
+<li><a href="#多个更改">多个更改</a></li>
+</ul></li>
+<li><a href="#示例源码">示例源码</a></li>
+<li><a href="#参考文档">参考文档</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>mongoDB的官方golang支持库，尚处于测试阶段。</p>
+
+<p>以下为示例代码分析总结，实现最基本的CRUD操作，</p>
+
+<p>可供初学者学习参考和引用。</p>
+
+<p>注意：源码并不能直接运行！</p>
+
+<h3 id="安装">安装</h3>
+
+<p>推荐使用goland与go mod（go modules ）</p>
+
+<p>官方网站：<a href="https://github.com/mongodb/mongo-go-driver"><strong>mongo-go-driver</strong></a>, <a href="https://github.com/golang/go/wiki/Modules"><strong>go modules</strong></a>.</p>
+
+<p>在需要用到的项目中任意一个包import链接，然后右键进行sync操作，便可以导入包，注意设置代理</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">//example
+</span><span class="c1"></span><span class="o">...</span>
+<span class="kn">import</span> <span class="p">(</span>
+    <span class="s">&#34;go.mongodb.org/mongo-driver/mongo&#34;</span>
+    <span class="s">&#34;go.mongodb.org/mongo-driver/mongo/options&#34;</span>
+<span class="p">)</span>
+<span class="o">...</span></code></pre></td></tr></table>
+</div>
+</div>
+<h3 id="初始化">初始化</h3>
+
+<p>在本地数据库环境下进行，所以请确保已经开启本地的数据库服务，可通过终端运行<code>mongo</code>命令进行判断。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">var</span> <span class="nx">ctx</span> <span class="p">=</span> <span class="nx">context</span><span class="p">.</span><span class="nf">Background</span><span class="p">()</span> 		<span class="c1">// create a new context
+</span><span class="c1"></span><span class="kd">var</span> <span class="nx">UserColl</span> <span class="o">*</span><span class="nx">mongo</span><span class="p">.</span><span class="nx">Collection</span> 		<span class="c1">// create a new collection
+</span><span class="c1"></span><span class="kd">type</span> <span class="nx">User</span> <span class="kd">struct</span> <span class="p">{</span> 					<span class="c1">// user type for example
+</span><span class="c1"></span>	<span class="nx">ID</span>        <span class="nx">primitive</span><span class="p">.</span><span class="nx">ObjectID</span> <span class="s">`bson:&#34;_id&#34;`</span>
+	<span class="nx">Username</span>  <span class="kt">string</span>             <span class="s">`bson:&#34;username&#34; `</span>
+	<span class="nx">Psw</span>       <span class="kt">string</span>             <span class="s">`bson:&#34;password&#34; `</span>
+	<span class="nx">CreatedAt</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Time</span>          <span class="s">`bson:&#34;created_at&#34;`</span>
+	<span class="nx">UpdatedAt</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Time</span>          <span class="s">`bson:&#34;updated_at&#34;`</span>
+<span class="p">}</span>
+
+<span class="c1">// connect database
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">init</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">ctx</span><span class="p">,</span> <span class="nx">_</span> <span class="o">:=</span> <span class="nx">context</span><span class="p">.</span><span class="nf">WithTimeout</span><span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nf">Background</span><span class="p">(),</span> <span class="mi">10</span><span class="o">*</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+	<span class="nx">client</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">mongo</span><span class="p">.</span><span class="nf">Connect</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span> <span class="nx">options</span><span class="p">.</span><span class="nf">Client</span><span class="p">().</span><span class="nf">ApplyURI</span><span class="p">(</span><span class="s">&#34;mongodb://localhost:27017&#34;</span><span class="p">))</span>  <span class="c1">// change the URI when you need
+</span><span class="c1"></span>	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="nx">log</span><span class="p">.</span><span class="nf">Fatal</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+	<span class="p">}</span>
+	<span class="c1">// check connection
+</span><span class="c1"></span>	<span class="nx">ctx</span><span class="p">,</span> <span class="nx">_</span> <span class="p">=</span> <span class="nx">context</span><span class="p">.</span><span class="nf">WithTimeout</span><span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nf">Background</span><span class="p">(),</span> <span class="mi">2</span><span class="o">*</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+	<span class="k">if</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">client</span><span class="p">.</span><span class="nf">Ping</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span> <span class="nx">readpref</span><span class="p">.</span><span class="nf">Primary</span><span class="p">());</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="nx">log</span><span class="p">.</span><span class="nf">Fatal</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+	<span class="p">}</span>
+    	<span class="c1">//example coll
+</span><span class="c1"></span>	<span class="nx">UserColl</span> <span class="p">=</span> <span class="nx">client</span><span class="p">.</span><span class="nf">Database</span><span class="p">(</span><span class="s">&#34;[db name]&#34;</span><span class="p">).</span><span class="nf">Collection</span><span class="p">(</span><span class="s">&#34;[coll name]&#34;</span><span class="p">)</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<h3 id="增">增</h3>
+
+<h4 id="单个新增">单个新增</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// controllers
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">ExampleMongo</span><span class="p">()</span> <span class="p">{</span>
+	<span class="c1">// insert one user
+</span><span class="c1"></span>	<span class="nx">NewUser</span> <span class="o">:=</span> <span class="nx">User</span><span class="p">{</span>
+		<span class="nx">Username</span><span class="p">:</span> <span class="s">&#34;userA&#34;</span><span class="p">,</span>
+		<span class="nx">Psw</span><span class="p">:</span>      <span class="s">&#34;123&#34;</span><span class="p">,</span>
+	<span class="p">}</span>
+	<span class="k">if</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nf">InsertOneUser</span><span class="p">(</span><span class="nx">NewUser</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="k">return</span>
+	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;new post created with id: %s&#34;</span><span class="p">,</span> <span class="nx">res</span><span class="p">.</span><span class="nx">InsertedID</span><span class="p">.(</span><span class="nx">primitive</span><span class="p">.</span><span class="nx">ObjectID</span><span class="p">).</span><span class="nf">Hex</span><span class="p">())</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+    
+<span class="c1">// models
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">InsertOneUser</span><span class="p">(</span><span class="nx">user</span> <span class="nx">User</span><span class="p">)</span> <span class="p">(</span><span class="o">*</span><span class="nx">mongo</span><span class="p">.</span><span class="nx">InsertOneResult</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">res</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">UserColl</span><span class="p">.</span><span class="nf">InsertOne</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span> <span class="nx">bson</span><span class="p">.</span><span class="nx">M</span><span class="p">{</span>
+		<span class="s">&#34;username&#34;</span><span class="p">:</span>   <span class="nx">user</span><span class="p">.</span><span class="nx">Username</span><span class="p">,</span>
+		<span class="s">&#34;psw&#34;</span><span class="p">:</span>        <span class="nx">user</span><span class="p">.</span><span class="nx">Psw</span><span class="p">,</span>
+		<span class="s">&#34;created_at&#34;</span><span class="p">:</span> <span class="nx">time</span><span class="p">.</span><span class="nf">Now</span><span class="p">(),</span>
+		<span class="s">&#34;updated_at&#34;</span><span class="p">:</span> <span class="nx">time</span><span class="p">.</span><span class="nf">Now</span><span class="p">()})</span>
+	<span class="k">return</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">err</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<h4 id="多个新增">多个新增</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// controllers
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">ExampleMongo</span><span class="p">()</span>  <span class="p">{</span>
+	<span class="c1">// insert many users
+</span><span class="c1"></span>	<span class="nx">NewUsers</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="nx">User</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+	<span class="nx">NewUsers</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">NewUsers</span><span class="p">,</span> <span class="nx">User</span><span class="p">{</span>
+		<span class="nx">Username</span><span class="p">:</span> <span class="s">&#34;userB&#34;</span><span class="p">,</span>
+		<span class="nx">Psw</span><span class="p">:</span>      <span class="s">&#34;123&#34;</span><span class="p">,</span>
+	<span class="p">},</span> <span class="nx">User</span><span class="p">{</span>
+		<span class="nx">Username</span><span class="p">:</span> <span class="s">&#34;userC&#34;</span><span class="p">,</span>
+		<span class="nx">Psw</span><span class="p">:</span>      <span class="s">&#34;123&#34;</span><span class="p">,</span>
+	<span class="p">})</span>
+	<span class="k">if</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nf">InsertManyUsers</span><span class="p">(</span><span class="nx">NewUsers</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="k">return</span>
+	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;inserted ids: %v\n&#34;</span><span class="p">,</span> <span class="nx">res</span><span class="p">.</span><span class="nx">InsertedIDs</span><span class="p">)</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// models
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">InsertManyUsers</span><span class="p">(</span><span class="nx">users</span> <span class="p">[]</span><span class="nx">User</span><span class="p">)</span> <span class="p">(</span><span class="o">*</span><span class="nx">mongo</span><span class="p">.</span><span class="nx">InsertManyResult</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">res</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">UserColl</span><span class="p">.</span><span class="nf">InsertMany</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span> <span class="p">[]</span><span class="kd">interface</span><span class="p">{}{</span>
+		<span class="nx">bson</span><span class="p">.</span><span class="nx">M</span><span class="p">{</span>
+			<span class="s">&#34;username&#34;</span><span class="p">:</span>   <span class="nx">users</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="nx">Username</span><span class="p">,</span>
+			<span class="s">&#34;psw&#34;</span><span class="p">:</span>        <span class="nx">users</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="nx">Psw</span><span class="p">,</span>
+			<span class="s">&#34;created_at&#34;</span><span class="p">:</span> <span class="nx">time</span><span class="p">.</span><span class="nf">Now</span><span class="p">(),</span>
+			<span class="s">&#34;updated_at&#34;</span><span class="p">:</span> <span class="nx">time</span><span class="p">.</span><span class="nf">Now</span><span class="p">()},</span>
+		<span class="nx">bson</span><span class="p">.</span><span class="nx">M</span><span class="p">{</span>
+			<span class="s">&#34;username&#34;</span><span class="p">:</span>   <span class="nx">users</span><span class="p">[</span><span class="mi">2</span><span class="p">].</span><span class="nx">Username</span><span class="p">,</span>
+			<span class="s">&#34;psw&#34;</span><span class="p">:</span>        <span class="nx">users</span><span class="p">[</span><span class="mi">2</span><span class="p">].</span><span class="nx">Psw</span><span class="p">,</span>
+			<span class="s">&#34;created_at&#34;</span><span class="p">:</span> <span class="nx">time</span><span class="p">.</span><span class="nf">Now</span><span class="p">(),</span>
+			<span class="s">&#34;updated_at&#34;</span><span class="p">:</span> <span class="nx">time</span><span class="p">.</span><span class="nf">Now</span><span class="p">()}})</span>
+	<span class="k">return</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">err</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<h3 id="删">删</h3>
+
+<h4 id="单个删除">单个删除</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// controllers
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">ExampleMongo</span><span class="p">()</span>  <span class="p">{</span>
+	<span class="c1">// delete one user
+</span><span class="c1"></span>	<span class="c1">// you can design your own filter
+</span><span class="c1"></span>	<span class="nx">id</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">primitive</span><span class="p">.</span><span class="nf">ObjectIDFromHex</span><span class="p">(</span><span class="s">&#34;[user id]&#34;</span><span class="p">)</span>
+	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="k">return</span>
+	<span class="p">}</span>
+	<span class="nx">filterDeleteOne</span> <span class="o">:=</span> <span class="nx">bson</span><span class="p">.</span><span class="nx">M</span><span class="p">{</span><span class="s">&#34;_id&#34;</span><span class="p">:</span> <span class="nx">id</span><span class="p">}</span>
+	<span class="k">if</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nf">DeleteOneUser</span><span class="p">(</span><span class="nx">filterDeleteOne</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="k">return</span>
+	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;deleted count: %d\n&#34;</span><span class="p">,</span> <span class="nx">res</span><span class="p">.</span><span class="nx">DeletedCount</span><span class="p">)</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// models
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">DeleteOneUser</span><span class="p">(</span><span class="nx">filter</span> <span class="nx">bson</span><span class="p">.</span><span class="nx">M</span><span class="p">)</span> <span class="p">(</span><span class="o">*</span><span class="nx">mongo</span><span class="p">.</span><span class="nx">DeleteResult</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">res</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">UserColl</span><span class="p">.</span><span class="nf">DeleteOne</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span> <span class="nx">filter</span><span class="p">)</span>
+	<span class="k">return</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">err</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<h4 id="多个删除">多个删除</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// controllers
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">ExampleMongo</span><span class="p">()</span>  <span class="p">{</span>
+	<span class="c1">// delete many users
+</span><span class="c1"></span>	<span class="c1">// delete documents created older than 2 days
+</span><span class="c1"></span>	<span class="nx">filterDeleteMany</span> <span class="o">:=</span> <span class="nx">bson</span><span class="p">.</span><span class="nx">M</span><span class="p">{</span><span class="s">&#34;created_at&#34;</span><span class="p">:</span> <span class="nx">bson</span><span class="p">.</span><span class="nx">M</span><span class="p">{</span>
+		<span class="s">&#34;$lt&#34;</span><span class="p">:</span> <span class="nx">time</span><span class="p">.</span><span class="nf">Now</span><span class="p">().</span><span class="nf">Add</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="mi">24</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Hour</span><span class="p">),</span>
+	<span class="p">}}</span>
+	<span class="k">if</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nf">DeleteManyUsers</span><span class="p">(</span><span class="nx">filterDeleteMany</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="k">return</span>
+	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;deleted count: %d\n&#34;</span><span class="p">,</span> <span class="nx">res</span><span class="p">.</span><span class="nx">DeletedCount</span><span class="p">)</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// models
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">DeleteManyUsers</span><span class="p">(</span><span class="nx">filter</span> <span class="nx">bson</span><span class="p">.</span><span class="nx">M</span><span class="p">)</span> <span class="p">(</span><span class="o">*</span><span class="nx">mongo</span><span class="p">.</span><span class="nx">DeleteResult</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">res</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">UserColl</span><span class="p">.</span><span class="nf">DeleteMany</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span> <span class="nx">filter</span><span class="p">)</span>
+	<span class="k">return</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">err</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<h3 id="查">查</h3>
+
+<h4 id="单个查找">单个查找</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// controllers
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">ExampleMongo</span><span class="p">()</span>  <span class="p">{</span>
+	<span class="c1">// find one user
+</span><span class="c1"></span>	<span class="nx">id</span><span class="p">,</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">primitive</span><span class="p">.</span><span class="nf">ObjectIDFromHex</span><span class="p">(</span><span class="s">&#34;[user id]&#34;</span><span class="p">)</span>
+	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="k">return</span>
+	<span class="p">}</span>
+	<span class="nx">filterFindOne</span> <span class="o">:=</span> <span class="nx">bson</span><span class="p">.</span><span class="nx">M</span><span class="p">{</span><span class="s">&#34;_id&#34;</span><span class="p">:</span> <span class="nx">id</span><span class="p">}</span>
+	<span class="k">if</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nf">FindOneUser</span><span class="p">(</span><span class="nx">filterFindOne</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="k">return</span>
+	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;post: %+v\n&#34;</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// models
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">FindOneUser</span><span class="p">(</span><span class="nx">filter</span> <span class="nx">bson</span><span class="p">.</span><span class="nx">M</span><span class="p">)</span> <span class="p">(</span><span class="nx">User</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">Msg</span> <span class="o">:=</span> <span class="nx">User</span><span class="p">{}</span>
+	<span class="nx">result</span> <span class="o">:=</span> <span class="nx">UserColl</span><span class="p">.</span><span class="nf">FindOne</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span> <span class="nx">filter</span><span class="p">)</span>
+	<span class="nx">err</span> <span class="o">:=</span> <span class="nx">result</span><span class="p">.</span><span class="nf">Decode</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">Msg</span><span class="p">)</span>
+	<span class="k">return</span> <span class="nx">Msg</span><span class="p">,</span> <span class="nx">err</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<h4 id="多个查找">多个查找</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// controllers
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">ExampleMongo</span><span class="p">()</span>  <span class="p">{</span>
+	<span class="c1">// find many user
+</span><span class="c1"></span>	<span class="nx">filterFindMany</span> <span class="o">:=</span> <span class="nx">bson</span><span class="p">.</span><span class="nx">M</span><span class="p">{</span><span class="s">&#34;[key]&#34;</span><span class="p">:</span> <span class="s">&#34;[value]&#34;</span><span class="p">}</span>
+	<span class="k">if</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nf">FindManyUsers</span><span class="p">(</span><span class="nx">filterFindMany</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="k">return</span>
+	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;post: %+v\n&#34;</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// models
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">FindManyUsers</span><span class="p">(</span><span class="nx">filter</span> <span class="nx">bson</span><span class="p">.</span><span class="nx">M</span><span class="p">)</span> <span class="p">([]</span><span class="nx">User</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">cursor</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">UserColl</span><span class="p">.</span><span class="nf">Find</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span> <span class="nx">filter</span><span class="p">)</span>
+	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="kc">nil</span><span class="p">,</span> <span class="nx">err</span>
+	<span class="p">}</span>
+	<span class="c1">// iterate through all documents
+</span><span class="c1"></span>	<span class="kd">var</span> <span class="nx">res</span> <span class="p">[]</span><span class="nx">User</span>
+	<span class="k">for</span> <span class="nx">cursor</span><span class="p">.</span><span class="nf">Next</span><span class="p">(</span><span class="nx">ctx</span><span class="p">)</span> <span class="p">{</span>
+		<span class="kd">var</span> <span class="nx">p</span> <span class="nx">User</span>
+		<span class="c1">// decode the document into given type
+</span><span class="c1"></span>		<span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">cursor</span><span class="p">.</span><span class="nf">Decode</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">p</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+			<span class="k">return</span> <span class="kc">nil</span><span class="p">,</span> <span class="nx">err</span>
+		<span class="p">}</span>
+		<span class="nx">res</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">res</span><span class="p">,</span> <span class="nx">p</span><span class="p">)</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="nx">res</span><span class="p">,</span> <span class="kc">nil</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<h3 id="改">改</h3>
+
+<h4 id="单个更改">单个更改</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// controllers
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">ExampleMongo</span><span class="p">()</span>  <span class="p">{</span>
+	<span class="c1">// update one user
+</span><span class="c1"></span>	<span class="nx">filter</span> <span class="o">:=</span> <span class="nx">bson</span><span class="p">.</span><span class="nx">M</span><span class="p">{</span><span class="s">&#34;[key]&#34;</span><span class="p">:</span> <span class="s">&#34;[value]&#34;</span><span class="p">}</span>
+	<span class="nx">update</span> <span class="o">:=</span> <span class="nx">bson</span><span class="p">.</span><span class="nx">M</span><span class="p">{</span><span class="s">&#34;[key]&#34;</span><span class="p">:</span> <span class="s">&#34;[value]&#34;</span><span class="p">}</span>
+	<span class="k">if</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nf">UpdateOneUser</span><span class="p">(</span><span class="nx">filter</span><span class="p">,</span> <span class="nx">update</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="k">return</span>
+	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;modified count: %d\n&#34;</span><span class="p">,</span> <span class="nx">res</span><span class="p">.</span><span class="nx">ModifiedCount</span><span class="p">)</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// models
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">UpdateOneUser</span><span class="p">(</span><span class="nx">filter</span> <span class="nx">bson</span><span class="p">.</span><span class="nx">M</span><span class="p">,</span> <span class="nx">update</span> <span class="nx">bson</span><span class="p">.</span><span class="nx">M</span><span class="p">)</span> <span class="p">(</span><span class="o">*</span><span class="nx">mongo</span><span class="p">.</span><span class="nx">UpdateResult</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">res</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">UserColl</span><span class="p">.</span><span class="nf">UpdateOne</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span> <span class="nx">filter</span><span class="p">,</span> <span class="nx">update</span><span class="p">)</span>
+	<span class="k">return</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">err</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<h4 id="多个更改">多个更改</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// controllers
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">ExampleMongo</span><span class="p">()</span>  <span class="p">{</span>
+	<span class="c1">// update many users
+</span><span class="c1"></span>    <span class="nx">filter</span> <span class="o">:=</span> <span class="nx">bson</span><span class="p">.</span><span class="nx">M</span><span class="p">{</span><span class="s">&#34;[key]&#34;</span><span class="p">:</span> <span class="s">&#34;[value]&#34;</span><span class="p">}</span>
+	<span class="nx">update</span> <span class="o">:=</span> <span class="nx">bson</span><span class="p">.</span><span class="nx">M</span><span class="p">{</span><span class="s">&#34;[key]&#34;</span><span class="p">:</span> <span class="s">&#34;[value]&#34;</span><span class="p">}</span>
+	<span class="k">if</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nf">UpdateManyUsers</span><span class="p">(</span><span class="nx">filter</span><span class="p">,</span> <span class="nx">update</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="k">return</span>
+	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;modified count: %d\n&#34;</span><span class="p">,</span> <span class="nx">res</span><span class="p">.</span><span class="nx">ModifiedCount</span><span class="p">)</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// models
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">UpdateManyUsers</span><span class="p">(</span><span class="nx">filter</span> <span class="nx">bson</span><span class="p">.</span><span class="nx">M</span><span class="p">,</span> <span class="nx">update</span> <span class="nx">bson</span><span class="p">.</span><span class="nx">M</span><span class="p">)</span> <span class="p">(</span><span class="o">*</span><span class="nx">mongo</span><span class="p">.</span><span class="nx">UpdateResult</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">res</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">UserColl</span><span class="p">.</span><span class="nf">UpdateMany</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span> <span class="nx">filter</span><span class="p">,</span> <span class="nx">update</span><span class="p">)</span>
+	<span class="k">return</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">err</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<h3 id="示例源码">示例源码</h3>
+
+<p>Github: <a href="https://github.com/WillXu24/study-space/blob/master/MongoDB%20Go%20Driver/MongoDB.go">MongoDB Go Driver</a></p>
+
+<h3 id="参考文档">参考文档</h3>
+
+<p><a href="https://vkt.sh/go-mongodb-driver-cookbook/">Using the official MongoDB Go driver</a></p>
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">Author</span>
+    <span class="item-content">will xu</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">LastMod</span>
+    <span class="item-content">
+        2019-08-01
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/mongodb/">MongoDB</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/20190711-manjaroinstall/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">Manjaro安装与配置</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/post/20190706-httpstudy/">
+            <span class="next-text nav-default">Http学习笔记</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+  
+  
+  <div id="vcomments"></div>
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+  <script type="text/javascript">
+    new Valine({
+        el: '#vcomments' ,
+        appId: 'x6Epf7YC8YLIJRYK1pvsE1U6-gzGzoHsz',
+        appKey: 'lcJGkSFUN3dy9qMJRL2E56jP',
+        notify:  false , 
+        verify:  false , 
+        avatar:'wavatar', 
+        placeholder: '说点什么吧...',
+        visitor:  false 
+    });
+  </script>
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+</div>
+
+<div class="copyright">
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> site pv: <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> </span>
+      <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> site uv: <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2018 - 
+    2019
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Will Xu</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.min.js" integrity="sha256-jwCP0NAdCBloaIWTWHmW4i3snUNMHUNO+jr9rYd2iOI=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.locales.min.js" integrity="sha256-ZwofwC1Lf/faQCzN7nZtfijVV6hSwxjQMwXL4gn9qU8=" crossorigin="anonymous"></script>
+  <script><!-- NOTE: timeago.js uses the language code format like "zh_CN" (underscore and case sensitive) -->
+    var languageCode = "en".replace(/-/g, '_').replace(/_(.*)/, function ($0, $1) {return $0.replace($1, $1.toUpperCase());});
+    timeago().render(document.querySelectorAll('.timeago'), languageCode);
+    timeago.cancel();  
+  </script>
+<script type="text/javascript" src="/dist/even.f79f403f.min.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

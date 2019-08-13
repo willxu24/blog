@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Mongodb学习笔记 - Will Blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="Will Xu" /><meta name="description" content="MongoDB 是由C&#43;&#43;语言编写的，是一个基于分布式文件存储的开源数据库系统。
+在高负载的情况下，添加更多的节点，可以保证服务器性能。
+MongoDB 旨在为WEB应用提供可扩展的高性能数据存储解决方案。
+MongoDB 将数据存储为一个文档，数据结构由键值(key=&amp;gt;value)对组成。MongoDB 文档类似于 JSON 对象。字段值可以包含其他文档，数组及文档数组。
+" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.57.0-DEV with even 4.0.0" />
+
+
+<link rel="canonical" href="https://willxu24.github.io/post/20190705-mongodbstudy/" />
+  <link href="/post/20190705-mongodbstudy/" rel="alternate" type="application/rss+xml" title="Will Blog" />
+  <link href="/post/20190705-mongodbstudy/" rel="feed" type="application/rss+xml" title="Will Blog" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link href="/dist/even.bc2f3a2c.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="Mongodb学习笔记" />
+<meta property="og:description" content="MongoDB 是由C&#43;&#43;语言编写的，是一个基于分布式文件存储的开源数据库系统。
+
+在高负载的情况下，添加更多的节点，可以保证服务器性能。
+
+MongoDB 旨在为WEB应用提供可扩展的高性能数据存储解决方案。
+
+MongoDB 将数据存储为一个文档，数据结构由键值(key=&gt;value)对组成。MongoDB 文档类似于 JSON 对象。字段值可以包含其他文档，数组及文档数组。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://willxu24.github.io/post/20190705-mongodbstudy/" />
+<meta property="article:published_time" content="2019-07-05T18:47:43+08:00" />
+<meta property="article:modified_time" content="2019-07-27T18:47:43+08:00" />
+<meta itemprop="name" content="Mongodb学习笔记">
+<meta itemprop="description" content="MongoDB 是由C&#43;&#43;语言编写的，是一个基于分布式文件存储的开源数据库系统。
+
+在高负载的情况下，添加更多的节点，可以保证服务器性能。
+
+MongoDB 旨在为WEB应用提供可扩展的高性能数据存储解决方案。
+
+MongoDB 将数据存储为一个文档，数据结构由键值(key=&gt;value)对组成。MongoDB 文档类似于 JSON 对象。字段值可以包含其他文档，数组及文档数组。">
+
+
+<meta itemprop="datePublished" content="2019-07-05T18:47:43&#43;08:00" />
+<meta itemprop="dateModified" content="2019-07-27T18:47:43&#43;08:00" />
+<meta itemprop="wordCount" content="1320">
+
+
+
+<meta itemprop="keywords" content="mongodb," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Mongodb学习笔记"/>
+<meta name="twitter:description" content="MongoDB 是由C&#43;&#43;语言编写的，是一个基于分布式文件存储的开源数据库系统。
+
+在高负载的情况下，添加更多的节点，可以保证服务器性能。
+
+MongoDB 旨在为WEB应用提供可扩展的高性能数据存储解决方案。
+
+MongoDB 将数据存储为一个文档，数据结构由键值(key=&gt;value)对组成。MongoDB 文档类似于 JSON 对象。字段值可以包含其他文档，数组及文档数组。"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Will Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a><a href="/about/">
+        <li class="mobile-menu-item">About</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">Will Blog</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/">About</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">Mongodb学习笔记</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2019-07-05 </span>
+        <div class="post-category">
+            <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"> 数据库 </a>
+            <a href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"> 学习笔记 </a>
+            </div>
+          <span class="more-meta"> 1320 words </span>
+          <span class="more-meta"> 3 mins read </span>
+        <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> times read </span>
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">Contents</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#文档">文档</a></li>
+<li><a href="#集合">集合</a></li>
+<li><a href="#数据库">数据库</a></li>
+<li><a href="#mangodb客户端">MangoDB客户端</a></li>
+<li><a href="#数据类型">数据类型</a></li>
+<li><a href="#基本用法">基本用法</a>
+<ul>
+<li><a href="#数据库的增删查">数据库的增删查</a></li>
+<li><a href="#集合的增删查">集合的增删查</a></li>
+<li><a href="#文档的增删查">文档的增删查</a></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>MongoDB 是由C++语言编写的，是一个基于分布式文件存储的开源数据库系统。</p>
+
+<p>在高负载的情况下，添加更多的节点，可以保证服务器性能。</p>
+
+<p>MongoDB 旨在为WEB应用提供可扩展的高性能数据存储解决方案。</p>
+
+<p>MongoDB 将数据存储为一个文档，数据结构由键值(key=&gt;value)对组成。MongoDB 文档类似于 JSON 对象。字段值可以包含其他文档，数组及文档数组。</p>
+
+<h3 id="文档">文档</h3>
+
+<p>MangoDB的核心概念之一</p>
+
+<p>形式：{&ldquo;键&rdquo;:&ldquo;键对应的键值&rdquo;,&ldquo;第二个键&rdquo;:&ldquo;第二个键对应的键值&rdquo;,&hellip;&hellip;.}</p>
+
+<p>键：除了某些保留字符意外的<strong>所有通用字符串</strong></p>
+
+<p>键值：任意UTF-8字符</p>
+
+<h3 id="集合">集合</h3>
+
+<p>文档对应数据库中的行，集合对应数据库中的表</p>
+
+<p>注意，这里的集合是<strong>无模式</strong>的，意味着自由度很大</p>
+
+<h3 id="数据库">数据库</h3>
+
+<p>多个文档组成集合，多个集合组成数据库</p>
+
+<h3 id="mangodb客户端">MangoDB客户端</h3>
+
+<p>安装与基本使用：略</p>
+
+<h3 id="数据类型">数据类型</h3>
+
+<table>
+<thead>
+<tr>
+<th align="left">数据类型</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td align="left">String</td>
+<td align="left">字符串。存储数据常用的数据类型。在 MongoDB 中，UTF-8 编码的字符串才是合法的。</td>
+</tr>
+
+<tr>
+<td align="left">Integer</td>
+<td align="left">整型数值。用于存储数值。根据你所采用的服务器，可分为 32 位或 64 位。</td>
+</tr>
+
+<tr>
+<td align="left">Boolean</td>
+<td align="left">布尔值。用于存储布尔值（真/假）。</td>
+</tr>
+
+<tr>
+<td align="left">Double</td>
+<td align="left">双精度浮点值。用于存储浮点值。</td>
+</tr>
+
+<tr>
+<td align="left">Min/Max keys</td>
+<td align="left">将一个值与 BSON（二进制的 JSON）元素的最低值和最高值相对比。</td>
+</tr>
+
+<tr>
+<td align="left">Array</td>
+<td align="left">用于将数组或列表或多个值存储为一个键。</td>
+</tr>
+
+<tr>
+<td align="left">Timestamp</td>
+<td align="left">时间戳。记录文档修改或添加的具体时间。</td>
+</tr>
+
+<tr>
+<td align="left">Object</td>
+<td align="left">用于内嵌文档。</td>
+</tr>
+
+<tr>
+<td align="left">Null</td>
+<td align="left">用于创建空值。</td>
+</tr>
+
+<tr>
+<td align="left">Symbol</td>
+<td align="left">符号。该数据类型基本上等同于字符串类型，但不同的是，它一般用于采用特殊符号类型的语言。</td>
+</tr>
+
+<tr>
+<td align="left">Date</td>
+<td align="left">日期时间。用 UNIX 时间格式来存储当前日期或时间。你可以指定自己的日期时间：创建 Date 对象，传入年月日信息。</td>
+</tr>
+
+<tr>
+<td align="left">Object ID</td>
+<td align="left">对象 ID。用于创建文档的 ID。</td>
+</tr>
+
+<tr>
+<td align="left">Binary Data</td>
+<td align="left">二进制数据。用于存储二进制数据。</td>
+</tr>
+
+<tr>
+<td align="left">Code</td>
+<td align="left">代码类型。用于在文档中存储 JavaScript 代码。</td>
+</tr>
+
+<tr>
+<td align="left">Regular expression</td>
+<td align="left">正则表达式类型。用于存储正则表达式。</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="基本用法">基本用法</h3>
+
+<p>一些Mongo shell的基本命令及用法</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">db.help()                    //显示数据库操作命令
+db.foo.help()                //显示集合foo的操作命令
+
+db                          //展示所处数据库
+db.dropDatabase()           //删除数据库（进入再执行）
+db.foo.insert()              //创建名为foo的集合（表）并插入文档（数据）                
+db.foo.remove({})            //删除foo集合内的所有文档（保留foo集合）
+db.foo.drop()               //删除集合foo
+
+db.foo.find()                //对于当前数据库中的foo集合进行数据查找（由于没有条件，会列出所有数据）
+db.foo.find( { a : 1 } )     //对于当前数据库中的foo集合进行条件查找，条件是数据中有一个键为a，键值为1
+
+use &lt;db_name&gt;                //转到指定数据库，不存在就创建
+
+show dbs                     //展示所有的数据库
+show collections/tables      //展示所有的集合
+show users                   show users in current database
+show profile                 show most recent system.profile entries with time &gt;= 1ms
+show logs                    show the accessible logger names
+show log [name]              prints out the last segment of log in memory, &#39;global&#39; is default</pre></td></tr></table>
+</div>
+</div>
+<p>​<br />
+​    exit                         quit the mongo shell</p>
+
+<h4 id="数据库的增删查">数据库的增删查</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">use db_name					//新增（已存在则切换）数据库
+db.dropDatabase()		     //删除当前数据库
+show dbs				    //查询显示所有数据库</pre></td></tr></table>
+</div>
+</div>
+<h4 id="集合的增删查">集合的增删查</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">db.foo.insert({&#34;a&#34;:&#34;1&#34;})	 //新增名为foo的集合并插入文档
+db.foo.drop()			    //删除当前数据库内名为foo的集合
+show tables				    //查询显示当前数据库内所有的集合</pre></td></tr></table>
+</div>
+</div>
+<h4 id="文档的增删查">文档的增删查</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">doc={
+	&#34;name&#34;:&#34;joe&#34;,
+	&#34;addr&#34;:&#34;hina&#34;
+	&#34;tel&#34;:&#34;123125126&#34;
+}
+db.foo.insert(doc)	         //新增单条文档doc至集合foo中
+
+db.foo.remove({})     		 //删除foo中的所有文档
+db.foo.remove({&#34;a&#34;:&#34;1&#34;})	 //删除foo中的指定文档
+
+db.foo.find()				//查询集合foo中的所有文档
+db.foo.find({&#34;a&#34;,&#34;1&#34;})   	 //指定条件查询集合foo中的某个文档</pre></td></tr></table>
+</div>
+</div>
+<!--20190705-->
+    </div>
+
+    
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/mongodb/">mongodb</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/20190706-httpstudy/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">Http学习笔记</span>
+            <span class="prev-text nav-mobile">Prev</span>
+          </a>
+        <a class="next" href="/post/20190403-mipsinstr/">
+            <span class="next-text nav-default">简单MIPS汇编语言设计</span>
+            <span class="next-text nav-mobile">Next</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+  
+  
+  <div id="vcomments"></div>
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+  <script type="text/javascript">
+    new Valine({
+        el: '#vcomments' ,
+        appId: 'x6Epf7YC8YLIJRYK1pvsE1U6-gzGzoHsz',
+        appKey: 'lcJGkSFUN3dy9qMJRL2E56jP',
+        notify:  false , 
+        verify:  false , 
+        avatar:'wavatar', 
+        placeholder: '说点什么吧...',
+        visitor:  false 
+    });
+  </script>
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+</div>
+
+<div class="copyright">
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> site pv: <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> </span>
+      <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> site uv: <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2018 - 
+    2019
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Will Xu</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.min.js" integrity="sha256-jwCP0NAdCBloaIWTWHmW4i3snUNMHUNO+jr9rYd2iOI=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago.js@3.0.2/dist/timeago.locales.min.js" integrity="sha256-ZwofwC1Lf/faQCzN7nZtfijVV6hSwxjQMwXL4gn9qU8=" crossorigin="anonymous"></script>
+  <script><!-- NOTE: timeago.js uses the language code format like "zh_CN" (underscore and case sensitive) -->
+    var languageCode = "en".replace(/-/g, '_').replace(/_(.*)/, function ($0, $1) {return $0.replace($1, $1.toUpperCase());});
+    timeago().render(document.querySelectorAll('.timeago'), languageCode);
+    timeago.cancel();  
+  </script>
+<script type="text/javascript" src="/dist/even.f79f403f.min.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>
