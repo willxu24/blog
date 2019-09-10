@@ -12,20 +12,22 @@
     
     
     <item>
-      <title>Ubuntu18.04下MongoDB的安装、配置、远程连接</title>
-      <link>https://willxu24.github.io/post/20190813-ubuntumongodb/</link>
+      <title>Ubuntu18.04虚拟机下基本设施搭建、配置与远程连接</title>
+      <link>https://willxu24.github.io/post/20190813-vminstall/</link>
       <pubDate>Tue, 13 Aug 2019 12:10:58 +0800</pubDate>
       
-      <guid>https://willxu24.github.io/post/20190813-ubuntumongodb/</guid>
-      <description>&lt;p&gt;又名：&lt;strong&gt;在服务器上搭建基础设施之MongoDB篇&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;在服务器上搭建一些基础设施有利于提高开发与学习的效率！&lt;/p&gt;
+      <guid>https://willxu24.github.io/post/20190813-vminstall/</guid>
+      <description>&lt;p&gt;在服务器上搭建一些基础设施有利于提高开发与学习的效率！&lt;/p&gt;
 
 &lt;p&gt;比如在本地需要连接数据库、缓存或者一些搜索引擎的帮助工具等等&lt;/p&gt;
 
-&lt;p&gt;所以最近开始在服务器上搭建基础设施&lt;/p&gt;
+&lt;p&gt;所以最近开始在服务器上搭建基础设施，包括&lt;/p&gt;
 
-&lt;p&gt;记录一下在Ubuntu18.04下安装MongoDB的过程&lt;/p&gt;</description>
+&lt;ul&gt;
+&lt;li&gt;MongoDB&lt;/li&gt;
+&lt;li&gt;MySQL&lt;/li&gt;
+&lt;li&gt;。。。&lt;/li&gt;
+&lt;/ul&gt;</description>
     </item>
     
     <item>
