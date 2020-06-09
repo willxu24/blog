@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>macOS on WillXu Blog</title>
+    <link>http://localhost:1313/tags/macos/</link>
+    <description>Recent content in macOS on WillXu Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Thu, 06 Dec 2018 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="http://localhost:1313/tags/macos/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>R720Win10&#43;Mac12.6</title>
+      <link>http://localhost:1313/post/201812-r720%E5%8F%8C%E7%B3%BB%E7%BB%9Fwin10&#43;macos/</link>
+      <pubDate>Thu, 06 Dec 2018 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/post/201812-r720%E5%8F%8C%E7%B3%BB%E7%BB%9Fwin10&#43;macos/</guid>
+      <description>&lt;p&gt;一次双系统教程记录&lt;/p&gt;
+&lt;p&gt;Win10+MacOs&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>
